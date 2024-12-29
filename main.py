@@ -34,6 +34,9 @@ def upload_image():
             public_url = response.json()['data']['url']
             messagebox.showinfo("Success", f"Image uploaded successfully!\nPublic URL: {public_url}")
             display_uploaded_image(image_path)  # Display the uploaded image
+            # Update the URL Entry with the image URL
+            url_entry.delete(0, tk.END)
+            url_entry.insert(0, public_url)
         else:
             messagebox.showerror("Error", "Failed to upload image.")
     except Exception as e:
@@ -51,6 +54,13 @@ def display_uploaded_image(image_path):
     # Update the label to show the image
     image_label.config(image=img_tk)
     image_label.image = img_tk  # Keep a reference to avoid garbage collection
+
+# Function to copy the URL to the clipboard
+def copy_to_clipboard():
+    url = url_entry.get()
+    root.clipboard_clear()
+    root.clipboard_append(url)
+    messagebox.showinfo("Success", "URL copied to clipboard!")
 
 # Set up the main window using Tkinter
 root = tk.Tk()
@@ -71,6 +81,18 @@ upload_button.pack(pady=20)
 # Label to display the uploaded image
 image_label = tk.Label(root, bg="#f4f4f4")
 image_label.pack(pady=20)
+
+# Label for the URL entry
+url_label = tk.Label(root, text="Image URL:", font=("Arial", 12), bg="#f4f4f4")
+url_label.pack(pady=10)
+
+# Entry field for the uploaded image URL
+url_entry = tk.Entry(root, font=("Arial", 12), width=50, bg="white")
+url_entry.pack(pady=10)
+
+# Button to copy the URL to clipboard
+copy_button = tk.Button(root, text="Copy URL", command=copy_to_clipboard, font=("Arial", 14), bg="blue", fg="white", relief="flat")
+copy_button.pack(pady=10)
 
 # Run the Tkinter main loop
 root.mainloop()
